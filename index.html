@@ -1,56 +1,237 @@
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Alkohol kalkulačka Rybízák</title>
-  <link rel="stylesheet" href="./style.css">
+<style>
+#alko-kalkulacka {
+  font-family: var(--font-body, sans-serif);
+  font-size: 15px;
+  padding: 30px;
+  background-color: #fdf9fc;
+  color: #333;
+  max-width: 650px;
+  margin: auto;
+}
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<h2>Alkoholová kalkulačka</h2>
+#alko-kalkulacka h2 {
+  background-color: #f3e9f9;
+  color: #45225e;
+  padding: 15px 20px;
+  border-left: 6px solid #45225e;
+  border-radius: 8px;
+  font-size: 22px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
 
-<form id="alcoholForm">
+#alko-kalkulacka form {
+  background-color: #ffffff;
+  border: 2px solid #e1d3ed;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  font-size: 14px;
+}
 
-  <!-- Pohlaví a Váha vedle sebe -->
-  <div class="flex-row">
-    <div>
-      <label for="gender">Pohlaví:</label>
-      <select id="gender">
-        <option value="male">Muž</option>
-        <option value="female">Žena</option>
-      </select>
-    </div>
-    <div>
-      <label for="weight">Váha (kg):</label>
-      <input type="number" id="weight" required>
-    </div>
-  </div>
+#alko-kalkulacka label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 500;
+  color: #444;
+}
 
-  <!-- Začátek a konec pití vedle sebe -->
-  <div class="flex-row">
-    <div>
-      <label for="startTime">Začátek pití:</label>
-      <input type="time" id="startTime" required>
-    </div>
-    <div>
-      <label for="endTime">Konec pití:</label>
-      <input type="time" id="endTime" required>
-    </div>
-  </div>
+#alko-kalkulacka input[type="number"],
+#alko-kalkulacka input[type="time"],
+#alko-kalkulacka select {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 140px;
+}
 
-  <h4>Zadej až 5 nápojů:</h4>
-  <div id="drink-rows">
-    <!-- Dynamicky generované přes JavaScript -->
-  </div>
+#alko-kalkulacka .flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 10px;
+}
 
-  <button type="submit">Spočítat</button>
-</form>
+#alko-kalkulacka .flex-row > div {
+  flex: 1;
+  min-width: 140px;
+}
 
-<!-- Výsledky -->
-<div id="result"></div>
-<!-- partial -->
-  <script  src="./script.js"></script>
+#alko-kalkulacka .drink-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
 
-</body>
-</html>
+#alko-kalkulacka .drink-entry label {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#alko-kalkulacka button {
+  background-color: #45225e;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#alko-kalkulacka button:hover {
+  background-color: #5c2e7a;
+}
+
+#alko-kalkulacka #result {
+  display: none;
+  background-color: #f3e9f9;
+  margin-top: 30px;
+  padding: 20px;
+  border-left: 5px solid #45225e;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+}
+
+#alko-kalkulacka #result strong {
+  color: #45225e;
+}
+
+#alko-kalkulacka small {
+  display: block;
+  color: #888;
+  margin-top: 15px;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const target = document.getElementById("alko-kalkulacka");
+
+  const drinks = [
+    { name: "Pivo 10° (4 %)", abv: 4 },
+    { name: "Pivo 12° (5 %)", abv: 5 },
+    { name: "Víno bílé (12 %)", abv: 12 },
+    { name: "Víno červené (13 %)", abv: 13 },
+    { name: "Sekt (11 %)", abv: 11 },
+    { name: "Vodka (40 %)", abv: 40 },
+    { name: "Rum (37.5 %)", abv: 37.5 },
+    { name: "Slivovice (50 %)", abv: 50 },
+    { name: "Fernet (38 %)", abv: 38 },
+    { name: "Griotka (20 %)", abv: 20 },
+    { name: "Cuba Libre", abv: 10 },
+    { name: "Gin & Tonic", abv: 9 },
+    { name: "Mojito", abv: 8 },
+    { name: "Aperol Spritz", abv: 11 },
+    { name: "Tequila Sunrise", abv: 12 },
+  ];
+
+  let html = `
+    <form id="alcoholForm">
+      <div class="flex-row">
+        <div>
+          <label for="gender">Pohlaví:</label>
+          <select id="gender">
+            <option value="male">Muž</option>
+            <option value="female">Žena</option>
+          </select>
+        </div>
+        <div>
+          <label for="weight">Váha (kg):</label>
+          <input type="number" id="weight" required>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div>
+          <label for="startTime">Začátek pití:</label>
+          <input type="time" id="startTime" required>
+        </div>
+        <div>
+          <label for="endTime">Konec pití:</label>
+          <input type="time" id="endTime" required>
+        </div>
+      </div>
+      <h4>Zadej až 5 nápojů:</h4>
+      <div id="drink-rows">`;
+
+  for (let i = 0; i < 5; i++) {
+    html += `
+      <div class="drink-entry">
+        <label>
+          Nápoj ${i + 1}:
+          <select id="select-${i}">
+            <option value="">– vyber nápoj –</option>
+            ${drinks.map((d, j) => `<option value="${j}">${d.name}</option>`).join("")}
+          </select>
+          &nbsp;&nbsp; Množství:
+          <input type="number" id="volume-${i}" placeholder="ml" min="0" style="width:80px">
+        </label>
+      </div>`;
+  }
+
+  html += `
+      </div>
+      <button type="submit">Spočítat</button>
+    </form>
+    <div id="result"></div>
+  `;
+
+  target.innerHTML = html;
+
+  document.getElementById("alcoholForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const gender = document.getElementById("gender").value;
+    const weight = parseFloat(document.getElementById("weight").value);
+    const startTime = document.getElementById("startTime").value;
+    const endTime = document.getElementById("endTime").value;
+    const r = gender === "male" ? 0.71 : 0.58;
+    const beta = 0.015;
+    const parseTime = t => {
+      const [h, m] = t.split(":").map(Number);
+      return h + m / 60;
+    };
+    const H = parseTime(endTime) - parseTime(startTime);
+    let totalAlcohol = 0;
+    for (let i = 0; i < 5; i++) {
+      const sel = document.getElementById(`select-${i}`).value;
+      const vol = parseFloat(document.getElementById(`volume-${i}`).value);
+      if (sel !== "" && !isNaN(vol) && vol > 0) {
+        const drink = drinks[sel];
+        totalAlcohol += vol * (drink.abv / 100) * 0.789;
+      }
+    }
+    const resultDiv = document.getElementById("result");
+    if (totalAlcohol === 0) {
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = "Zadej alespoň jeden nápoj.";
+      return;
+    }
+    const bac0 = totalAlcohol / (weight * 1000 * r) * 1000;
+    const bac = Math.max(0, bac0 - beta * H);
+    const tSobriety = bac / beta;
+    const soberDecimal = parseTime(endTime) + tSobriety;
+    const soberH = Math.floor(soberDecimal) % 24;
+    const soberM = Math.round((soberDecimal % 1) * 60);
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = `
+      💧 <strong>Odhadované promile:</strong> ${bac.toFixed(3)} ‰<br>
+      ⏰ <strong>Vystřízlivíte přibližně v:</strong> ${String(soberH).padStart(2, '0')}:${String(soberM).padStart(2, '0')}
+      <small>Výpočty jsou orientační. Skutečné odbourávání závisí na individuálních faktorech.</small>
+    `;
+  });
+});
+</script>
+
+<div id="alko-kalkulacka"></div>
