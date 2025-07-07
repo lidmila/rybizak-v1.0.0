@@ -1,6 +1,6 @@
 body {
   font-family: var(--font-body, sans-serif);
-  font-size: 15px; /* menší základní písmo */
+  font-size: 15px;
   padding: 30px;
   background-color: #fdf9fc;
   color: #333;
@@ -45,6 +45,7 @@ select {
   width: 140px;
 }
 
+/* Pohlaví + Váha / Začátek + Konec vedle sebe */
 .flex-row {
   display: flex;
   flex-wrap: wrap;
