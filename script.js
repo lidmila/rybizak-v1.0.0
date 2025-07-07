@@ -70,6 +70,7 @@ document.getElementById("alcoholForm").addEventListener("submit", function(e) {
 
   if (totalAlcohol === 0) {
     document.getElementById("result").innerHTML = "Zadej alespoň jeden nápoj.";
+    document.getElementById("result").style.display = "block";
     return;
   }
 
@@ -80,8 +81,9 @@ document.getElementById("alcoholForm").addEventListener("submit", function(e) {
   const soberH = Math.floor(soberDecimal) % 24;
   const soberM = Math.round((soberDecimal % 1) * 60);
 
-  document.getElementById("result").innerHTML =
-    `💧 <strong>Odhadované promile:</strong> ${bac.toFixed(3)} ‰<br>` +
-    `⏰ <strong>Vystřízlivíte přibližně v:</strong> ${String(soberH).padStart(2, '0')}:${String(soberM).padStart(2, '0')}<br><br>` +
-    `<small>Výpočty jsou orientační. Skutečné odbourávání závisí na individuálních faktorech.</small>`;
+ document.getElementById("result").style.display = "block";
+document.getElementById("result").innerHTML =
+  `💧 <strong>Odhadované promile:</strong> ${bac.toFixed(3)} ‰<br>` +
+  `⏰ <strong>Vystřízlivíte přibližně v:</strong> ${String(soberH).padStart(2, '0')}:${String(soberM).padStart(2, '0')}<br><br>` +
+  `<small>Výpočty jsou orientační. Skutečné odbourávání závisí na individuálních faktorech.</small>`;
 });

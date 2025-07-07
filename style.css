@@ -92,6 +92,7 @@ button:hover {
 }
 
 #result {
+  display: none; /* výchozí stav: neviditelný */
   background-color: #f3e9f9;
   margin-top: 30px;
   padding: 20px;
@@ -102,6 +103,7 @@ button:hover {
   line-height: 1.6;
   color: #333;
 }
+
 
 #result strong {
   color: #45225e;
