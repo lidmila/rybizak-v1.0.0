@@ -487,8 +487,19 @@
       return el;
     }
     if (typeof target === "string" && target.trim()) {
-      const selector = target.startsWith("#") || target.startsWith(".") ? target : `#${target}`;
-      return document.querySelector(selector);
+      const trimmed = target.trim();
+      const selector = trimmed.startsWith("#") || trimmed.startsWith(".") ? trimmed : `#${trimmed}`;
+      let el = document.querySelector(selector);
+      if (!el) {
+        // If it's an id-like selector or plain name, create the element for resilience
+        const id = selector.startsWith("#") ? selector.slice(1) : (!selector.startsWith(".") ? selector.replace(/^#/, "") : "");
+        if (id) {
+          el = document.createElement("div");
+          el.id = id;
+          document.body.appendChild(el);
+        }
+      }
+      return el;
     }
     return document.getElementById("alko-kalkulacka");
   }
