@@ -36,6 +36,11 @@
   margin: auto;
 }
 
+#${targetId},
+#${targetId} * {
+  box-sizing: border-box;
+}
+
 #${targetId} form {
   background: transparent;
   border: 0;
@@ -46,7 +51,7 @@
 
 #${targetId} .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
   gap: 16px;
 }
 
@@ -71,6 +76,7 @@
   border: 1px solid #d6d0dc;
   background: #fff;
   font-size: 14px;
+  max-width: 100%;
 }
 
 #${targetId} .help {
@@ -86,9 +92,9 @@
 
 #${targetId} .drink-row {
   display: grid;
-  grid-template-columns: 1.2fr 0.9fr 0.9fr auto;
+  grid-template-columns: minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) auto;
   gap: 12px;
-  align-items: end;
+  align-items: start;
   padding: 10px 0;
   border-bottom: 1px dashed #eee;
 }
@@ -102,6 +108,11 @@
 #${targetId} .row-actions {
   display: flex;
   gap: 8px;
+}
+
+#${targetId} .grid > *,
+#${targetId} .drink-row > * {
+  min-width: 0;
 }
 
 #${targetId} .chip-list {
