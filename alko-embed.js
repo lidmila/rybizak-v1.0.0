@@ -92,7 +92,7 @@
 
 #${targetId} .drink-row {
   display: grid;
-  grid-template-columns: minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) auto;
+  grid-template-columns: minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) 44px;
   gap: 12px;
   align-items: start;
   padding: 10px 0;
@@ -108,6 +108,8 @@
 #${targetId} .row-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 #${targetId} .grid > *,
@@ -157,7 +159,12 @@
 #${targetId} .btn.icon {
   background: transparent !important;
   color: var(--color-primary);
-  padding: 4px 6px;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
   border: none;
   font-size: 18px;
