@@ -17,7 +17,7 @@
     style.textContent = `
 /* Theme */
 #${targetId} {
-  --color-bg: #faf7fb;
+  --color-bg: transparent;
   --color-card: #ffffff;
   --color-primary: #45225e;
   --color-primary-600: #5c2e7a;
@@ -28,30 +28,20 @@
   font-family: var(--font-body, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   color: var(--color-text);
   font-size: 15px;
-  background: var(--color-bg);
-  padding: 28px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
   max-width: 760px;
   margin: auto;
 }
 
-#${targetId} h2 {
-  margin: 0 0 18px;
-  font-size: 22px;
-  line-height: 1.3;
-  color: var(--color-primary);
-  background: var(--color-accent);
-  padding: 14px 18px;
-  border-left: 6px solid var(--color-primary);
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
 #${targetId} form {
-  background: var(--color-card);
-  border: 1.5px solid var(--color-border);
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 #${targetId} .grid {
@@ -97,7 +87,7 @@
 #${targetId} .drink-row {
   display: grid;
   grid-template-columns: 1.2fr 0.9fr 0.9fr auto;
-  gap: 10px;
+  gap: 12px;
   align-items: end;
   padding: 10px 0;
   border-bottom: 1px dashed #eee;
@@ -154,8 +144,12 @@
 }
 
 #${targetId} .btn.icon {
-  padding: 8px 10px;
+  background: transparent !important;
+  color: var(--color-primary);
+  padding: 4px 6px;
   line-height: 1;
+  border: none;
+  font-size: 18px;
 }
 
 #${targetId} .btn:hover {
@@ -164,6 +158,11 @@
 
 #${targetId} .btn.secondary:hover {
   background: #e4dbee;
+}
+
+#${targetId} .btn.icon:hover {
+  color: var(--color-primary-600);
+  transform: scale(1.06);
 }
 
 #${targetId} .actions {
@@ -175,12 +174,12 @@
 
 #${targetId} #result {
   display: none;
-  background: var(--color-accent);
-  margin-top: 22px;
-  padding: 16px;
-  border-left: 5px solid var(--color-primary);
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background: transparent;
+  margin-top: 18px;
+  padding: 0 0 0 12px;
+  border-left: 4px solid var(--color-primary);
+  border-radius: 0;
+  box-shadow: none;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -239,14 +238,18 @@
       { name: "Paloma", abv: 10, defaults: [300] }
     ];
 
+    const catalog = drinks.slice().sort(function (a, b) {
+      return a.name.localeCompare(b.name, "cs", { sensitivity: "base" });
+    });
+
     function buildDrinkOptions() {
-      const base = `<option value="">– vyber nápoj –</option>` + drinks
-        .map((d, i) => `<option value="${i}">${d.name}</option>`)
+      const base = `<option value="">– vyber nápoj –</option>` + catalog
+        .map(function (d, i) { return `<option value="${i}">${d.name}</option>`; })
         .join("");
       return base + `<option value="custom">Vlastní nápoj (% ABV)</option>`;
     }
 
-    const html = 
+    const html = `
       <form id="alcoholForm" novalidate>
         <div class="grid">
           <div>
@@ -343,7 +346,7 @@
           abvEl.value = "";
           renderChips([]);
         } else if (val !== "") {
-          const d = drinks[Number(val)];
+          const d = catalog[Number(val)];
           abvEl.value = String(d.abv);
           abvEl.disabled = true;
           renderChips(d.defaults || []);
