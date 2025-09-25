@@ -246,8 +246,7 @@
       return base + `<option value="custom">Vlastní nápoj (% ABV)</option>`;
     }
 
-    const html = `
-      <h2>Alkohol kalkulačka</h2>
+    const html = 
       <form id="alcoholForm" novalidate>
         <div class="grid">
           <div>
